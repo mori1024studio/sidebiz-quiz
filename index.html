@@ -1,0 +1,680 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width,initial-scale=1.0">
+<title>副業基因測驗｜你的副業天賦是哪一種？</title>
+<meta name="description" content="10題精準診斷，找出你最適合的副業發展路徑。知識變現、內容引流、服務套件、工具整合、媒介橋梁——你是哪一種？"/>
+<meta property="og:title" content="副業基因測驗｜你的副業天賦是哪一種？"/>
+<meta property="og:description" content="10題精準診斷，找出你最適合的副業發展路徑"/>
+<meta property="og:type" content="website"/>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC:wght@400;500;700;900&display=swap" rel="stylesheet">
+<style>
+/* ── CSS：全域變數與基礎 ── */
+:root{
+  --bg:#0A0A0F;--card:#14141F;--opt:#1C1C2A;
+  --gold:#C4A96A;--gold2:#E8C86A;
+  --text:#F0EDE8;--muted:#6B6878;
+  --border:rgba(255,255,255,.06);
+  --r-card:18px;--r-btn:100px;
+}
+*{box-sizing:border-box;margin:0;padding:0}
+html,body{min-height:100%;background:var(--bg);color:var(--text);font-family:'Noto Sans TC',sans-serif;-webkit-font-smoothing:antialiased}
+body{cursor:none}
+#cursor{position:fixed;width:10px;height:10px;border-radius:50%;background:var(--gold);pointer-events:none;z-index:9999;transform:translate(-50%,-50%);transition:transform .15s ease,width .2s,height .2s}
+#cursor-ring{position:fixed;width:32px;height:32px;border-radius:50%;border:1px solid rgba(196,169,106,.4);pointer-events:none;z-index:9998;transform:translate(-50%,-50%);transition:transform .08s ease}
+
+/* ── CSS：粒子背景 ── */
+#particles-js{position:fixed;top:0;left:0;width:100%;height:100%;z-index:0}
+
+/* ── CSS：畫面容器 ── */
+.screen{display:none;position:relative;z-index:1;min-height:100vh;padding:24px 20px 60px;max-width:520px;margin:0 auto}
+.screen.active{display:flex;flex-direction:column;align-items:center}
+
+/* ── CSS：開始畫面 ── */
+.badge-pill{display:inline-block;background:rgba(196,169,106,.1);border:1px solid rgba(196,169,106,.25);color:var(--gold);padding:5px 18px;border-radius:100px;font-size:12px;font-weight:700;letter-spacing:.06em;margin-bottom:28px}
+.hero-h1{font-size:clamp(28px,7vw,42px);font-weight:900;line-height:1.15;text-align:center;margin-bottom:16px;background:linear-gradient(135deg,#fff 30%,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text}
+.hero-sub{font-size:14px;color:var(--muted);text-align:center;line-height:1.7;margin-bottom:32px;max-width:340px}
+.stat-row{display:flex;gap:12px;margin-bottom:40px;flex-wrap:wrap;justify-content:center}
+.stat-chip{background:rgba(255,255,255,.04);border:1px solid var(--border);border-radius:100px;padding:6px 16px;font-size:12px;font-weight:700;color:var(--muted)}
+.btn-start{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0A0A0F;font-family:inherit;font-size:15px;font-weight:900;padding:16px 48px;border-radius:100px;border:none;cursor:none;width:100%;max-width:320px;letter-spacing:.04em;transition:opacity .2s,transform .2s}
+.btn-start:hover{opacity:.9;transform:translateY(-1px)}
+.hero-note{font-size:11px;color:var(--muted);margin-top:16px;text-align:center}
+
+/* ── CSS：題目畫面 ── */
+.prog-wrap{width:100%;margin-bottom:28px}
+.prog-label{display:flex;justify-content:space-between;font-size:11px;font-weight:700;letter-spacing:.08em;color:var(--muted);margin-bottom:8px}
+.prog-track{height:3px;background:rgba(255,255,255,.07);border-radius:100px;overflow:hidden}
+.prog-fill{height:100%;border-radius:100px;background:linear-gradient(90deg,var(--gold),var(--gold2));transition:width .4s ease}
+.q-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);padding:28px 24px;width:100%;margin-bottom:20px}
+.q-num{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:12px}
+.q-text{font-size:16px;font-weight:700;line-height:1.6;color:var(--text)}
+.opts-list{display:flex;flex-direction:column;gap:10px;width:100%}
+.opt-btn{background:var(--opt);border:1px solid var(--border);border-radius:12px;padding:14px 18px;font-family:inherit;font-size:14px;color:var(--text);cursor:none;text-align:left;line-height:1.5;transition:all .18s ease;position:relative;overflow:hidden}
+.opt-btn:hover{border-color:rgba(196,169,106,.4);background:#22223A}
+.opt-btn.selected{border-color:var(--gold);background:rgba(196,169,106,.12)}
+.btn-next{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0A0A0F;font-family:inherit;font-size:14px;font-weight:900;padding:14px 36px;border-radius:100px;border:none;cursor:none;margin-top:16px;opacity:.4;pointer-events:none;transition:opacity .2s,transform .2s;width:100%;max-width:280px}
+.btn-next.ready{opacity:1;pointer-events:auto}
+.btn-next.ready:hover{transform:translateY(-1px)}
+
+/* ── CSS：計算畫面 ── */
+.calc-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;gap:32px;text-align:center}
+.calc-title{font-size:18px;font-weight:700;color:var(--gold)}
+.calc-steps{display:flex;flex-direction:column;gap:14px;align-items:flex-start}
+.calc-step{display:flex;align-items:center;gap:12px;font-size:13px;color:var(--muted);opacity:0;transition:opacity .5s ease}
+.calc-step.show{opacity:1}
+.c-dot{width:6px;height:6px;border-radius:50%;background:var(--gold);flex-shrink:0}
+
+/* ── CSS：結果畫面（T6 路線地圖）── */
+.res-tag{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--gold);text-transform:uppercase;margin-bottom:10px;text-align:center}
+.res-type-emoji{font-size:56px;margin-bottom:14px;display:block;text-align:center;animation:emojiPop .5s cubic-bezier(.34,1.56,.64,1) .2s both}
+@keyframes emojiPop{from{transform:scale(0) rotate(-10deg);opacity:0}to{transform:scale(1) rotate(0);opacity:1}}
+.res-type-name{font-size:clamp(26px,6vw,38px);font-weight:900;text-align:center;margin-bottom:6px;background:linear-gradient(135deg,#fff 30%,var(--gold));-webkit-background-clip:text;-webkit-text-fill-color:transparent;background-clip:text;animation:fadeUp .5s ease .4s both}
+.res-type-en{font-size:12px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);text-align:center;margin-bottom:20px;animation:fadeUp .5s ease .5s both}
+@keyframes fadeUp{from{opacity:0;transform:translateY(12px)}to{opacity:1;transform:none}}
+.res-motto{background:rgba(196,169,106,.07);border:1px solid rgba(196,169,106,.2);border-radius:12px;padding:16px 20px;font-size:14px;font-weight:700;color:var(--gold);text-align:center;line-height:1.6;margin-bottom:24px;animation:fadeUp .5s ease .6s both}
+.res-portrait{font-size:14px;color:rgba(240,237,232,.7);line-height:1.75;margin-bottom:28px;animation:fadeUp .5s ease .7s both}
+
+/* ── CSS：T6 路線地圖 ── */
+.route-title{font-size:11px;font-weight:700;letter-spacing:.1em;color:var(--muted);text-transform:uppercase;margin-bottom:20px;text-align:center}
+.route-map{display:flex;flex-direction:column;width:100%;margin-bottom:28px}
+.route-step{display:flex;align-items:flex-start;gap:14px;opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.route-step.visible{opacity:1;transform:none}
+.step-left{display:flex;flex-direction:column;align-items:center;min-width:42px;flex-shrink:0}
+.step-circle{width:42px;height:42px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:20px;border:2px solid var(--type-color,var(--gold));background:rgba(196,169,106,.08);flex-shrink:0}
+.step-line{width:2px;height:36px;background:linear-gradient(to bottom,var(--type-color,var(--gold)),transparent);margin:3px 0;opacity:.4;flex-shrink:0}
+.step-content{padding:6px 0 20px;flex:1}
+.step-stage{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--type-color,var(--gold));margin-bottom:4px;opacity:.8}
+.step-title{font-size:15px;font-weight:700;color:var(--text);margin-bottom:5px}
+.step-desc{font-size:13px;color:var(--muted);line-height:1.6}
+
+/* ── CSS：首步行動卡 ── */
+.action-card{background:rgba(196,169,106,.06);border:1px solid rgba(196,169,106,.25);border-radius:var(--r-card);padding:20px;margin-bottom:28px;opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.action-card.visible{opacity:1;transform:none}
+.action-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--gold);margin-bottom:10px}
+.action-text{font-size:14px;color:var(--text);line-height:1.7}
+
+/* ── CSS：Mori 觀點 ── */
+.mori-card{background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);padding:20px;margin-bottom:32px;opacity:0;transform:translateY(14px);transition:opacity .5s ease,transform .5s ease}
+.mori-card.visible{opacity:1;transform:none}
+.mori-label{font-size:10px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--muted);margin-bottom:10px}
+.mori-text{font-size:13px;color:rgba(240,237,232,.75);line-height:1.8}
+
+/* ── CSS：調查區塊 ── */
+.survey-wrap{width:100%;margin-bottom:32px;opacity:0;transition:opacity .5s ease .3s}
+.survey-wrap.visible{opacity:1}
+.survey-label{font-size:11px;font-weight:700;letter-spacing:.12em;color:var(--muted);text-transform:uppercase;margin-bottom:18px;text-align:center}
+.survey-group{margin-bottom:22px}
+.survey-q{font-size:14px;font-weight:700;color:var(--text);margin-bottom:12px;line-height:1.5}
+.survey-opts{display:flex;flex-direction:column;gap:8px}
+.survey-opt{background:var(--opt);border:1px solid var(--border);border-radius:10px;padding:12px 16px;font-family:inherit;font-size:13px;color:var(--muted);cursor:none;text-align:left;transition:all .18s}
+.survey-opt:hover{border-color:rgba(196,169,106,.3)}
+.survey-opt.picked{border-color:var(--gold);color:var(--text);background:rgba(196,169,106,.08)}
+
+/* ── CSS：Email 收集 ── */
+.email-section{width:100%;background:var(--card);border:1px solid var(--border);border-radius:var(--r-card);padding:24px;margin-bottom:24px}
+.email-title{font-size:16px;font-weight:900;color:var(--text);margin-bottom:8px;line-height:1.4}
+.email-sub{font-size:13px;color:var(--muted);margin-bottom:20px;line-height:1.6}
+.email-row{display:flex;gap:10px;flex-direction:column}
+.email-inp{background:#0F0F1A;border:1px solid rgba(255,255,255,.1);border-radius:10px;padding:14px 16px;font-family:inherit;font-size:14px;color:var(--text);outline:none;width:100%;transition:border .2s}
+.email-inp:focus{border-color:var(--gold)}
+.btn-subscribe{background:linear-gradient(135deg,var(--gold),var(--gold2));color:#0A0A0F;font-family:inherit;font-size:14px;font-weight:900;padding:14px 24px;border-radius:100px;border:none;cursor:none;width:100%;transition:opacity .2s}
+.btn-subscribe:hover{opacity:.9}
+.email-done{display:none;background:rgba(122,196,122,.1);border:1px solid rgba(122,196,122,.3);border-radius:10px;padding:12px 16px;font-size:13px;color:#7AC47A;margin-top:10px;text-align:center}
+.btn-skip-email{background:none;border:none;color:var(--muted);font-family:inherit;font-size:12px;cursor:none;padding:10px;margin-top:4px;width:100%;text-align:center;transition:color .2s}
+.btn-skip-email:hover{color:var(--text)}
+
+/* ── CSS：社群按鈕 ── */
+.social-row{display:flex;gap:10px;width:100%;margin-bottom:16px}
+.btn-social{flex:1;display:flex;align-items:center;justify-content:center;gap:8px;padding:13px 16px;border-radius:12px;font-family:inherit;font-size:13px;font-weight:700;cursor:none;border:1px solid var(--border);background:var(--opt);color:var(--text);transition:all .18s}
+.btn-social:hover{border-color:rgba(196,169,106,.4)}
+
+/* ── CSS：分隔線 ── */
+.divider{width:100%;height:1px;background:var(--border);margin:28px 0}
+
+/* ── CSS：選分享卡 ── */
+#share-card{position:fixed;left:-9999px;top:0;width:600px;height:600px;background:#0A0A0F;display:flex;flex-direction:column;align-items:center;justify-content:center;padding:48px;overflow:hidden}
+#sc-glow{position:absolute;top:0;left:0;width:100%;height:100%;pointer-events:none}
+#sc-accent{position:absolute;top:0;left:0;width:100%;height:3px}
+#sc-emoji{font-size:72px;margin-bottom:20px;position:relative;z-index:1}
+#sc-type-en{font-size:12px;font-weight:700;letter-spacing:.12em;color:rgba(196,169,106,.6);text-transform:uppercase;margin-bottom:10px;position:relative;z-index:1}
+#sc-type-zh{font-size:44px;font-weight:900;color:#fff;margin-bottom:16px;position:relative;z-index:1}
+#sc-motto{font-size:16px;color:rgba(240,237,232,.7);text-align:center;line-height:1.6;margin-bottom:24px;position:relative;z-index:1;max-width:440px}
+#sc-url{font-size:12px;color:rgba(196,169,106,.5);position:relative;z-index:1}
+</style>
+</head>
+<body>
+
+<canvas id="particles-js"></canvas>
+<div id="cursor"></div>
+<div id="cursor-ring"></div>
+
+<!-- ── 畫面：開始 ── -->
+<div class="screen active" id="screen-start">
+  <div style="height:40px"></div>
+  <div class="badge-pill">🧬 副業基因測驗</div>
+  <h1 class="hero-h1">你的副業天賦<br>是哪一種？</h1>
+  <p class="hero-sub">同樣是「想做副業」，適合的路徑卻完全不同。<br>10 題找出你的副業基因，生成專屬發展路線地圖。</p>
+  <div class="stat-row">
+    <div class="stat-chip">🧬 <strong>5</strong> 種副業基因類型</div>
+    <div class="stat-chip">📍 <strong>10</strong> 題情境診斷</div>
+    <div class="stat-chip">⏱ 約 <strong>3</strong> 分鐘</div>
+  </div>
+  <button class="btn-start" onclick="startQuiz()">開始測驗</button>
+  <p class="hero-note">完全免費 · 無需登入</p>
+</div>
+
+<!-- ── 畫面：題目 ── -->
+<div class="screen" id="screen-quiz">
+  <div class="prog-wrap">
+    <div class="prog-label">
+      <span id="progLabel">第 1 題，共 10 題</span>
+      <span id="progPct">0%</span>
+    </div>
+    <div class="prog-track"><div class="prog-fill" id="progFill" style="width:0%"></div></div>
+  </div>
+  <div class="q-card">
+    <div class="q-num" id="qNum">Q1</div>
+    <div class="q-text" id="qText"></div>
+  </div>
+  <div class="opts-list" id="optsList"></div>
+  <button class="btn-next" id="btnNext" onclick="nextQ()">下一題 →</button>
+</div>
+
+<!-- ── 畫面：計算中 ── -->
+<div class="screen" id="screen-calc">
+  <div class="calc-wrap">
+    <div class="calc-title">分析你的副業基因中…</div>
+    <div class="calc-steps">
+      <div class="calc-step" id="cs1"><div class="c-dot"></div>解析你的工作偏好模式</div>
+      <div class="calc-step" id="cs2"><div class="c-dot"></div>評估你的核心資源類型</div>
+      <div class="calc-step" id="cs3"><div class="c-dot"></div>對應最適合的副業路徑</div>
+      <div class="calc-step" id="cs4"><div class="c-dot"></div>生成你的個人發展地圖</div>
+    </div>
+  </div>
+</div>
+
+<!-- ── 畫面：結果（T6 路線地圖）── -->
+<div class="screen" id="screen-result">
+  <div style="height:20px"></div>
+  <div class="res-tag">你的副業基因類型</div>
+  <span class="res-type-emoji" id="resEmoji"></span>
+  <div class="res-type-name" id="resName"></div>
+  <div class="res-type-en" id="resEn"></div>
+  <div class="res-motto" id="resMotto"></div>
+  <div class="res-portrait" id="resPortrait"></div>
+
+  <div class="route-title">✦ 你的副業發展路線地圖</div>
+  <div class="route-map" id="routeMap"></div>
+
+  <div class="action-card" id="actionCard">
+    <div class="action-label">▶ 今天就可以做的第一步</div>
+    <div class="action-text" id="actionText"></div>
+  </div>
+
+  <div class="mori-card" id="moriCard">
+    <div class="mori-label">Mori 的觀察</div>
+    <div class="mori-text" id="moriText"></div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- 調查 -->
+  <div class="survey-wrap" id="surveyWrap">
+    <div class="survey-label">✦ 更了解你現在的狀態</div>
+    <div class="survey-group">
+      <div class="survey-q">你目前的副業狀態是？</div>
+      <div class="survey-opts">
+        <button class="survey-opt" onclick="surveyPick(1,'A',this)">還沒有任何嘗試，但很想開始</button>
+        <button class="survey-opt" onclick="surveyPick(1,'B',this)">有想法但一直沒有行動</button>
+        <button class="survey-opt" onclick="surveyPick(1,'C',this)">嘗試了一些，還沒有穩定收入</button>
+        <button class="survey-opt" onclick="surveyPick(1,'D',this)">已有穩定副業收入</button>
+      </div>
+    </div>
+    <div class="survey-group">
+      <div class="survey-q">你最想靠副業實現什麼？</div>
+      <div class="survey-opts">
+        <button class="survey-opt" onclick="surveyPick(2,'A',this)">每月多 1-2 萬，補充主業收入</button>
+        <button class="survey-opt" onclick="surveyPick(2,'B',this)">達到財務自由，完全靠副業生活</button>
+        <button class="survey-opt" onclick="surveyPick(2,'C',this)">做有意義的事，不只為了錢</button>
+        <button class="survey-opt" onclick="surveyPick(2,'D',this)">建立一個可規模化的一人事業</button>
+      </div>
+    </div>
+    <div class="survey-group">
+      <div class="survey-q">你每天能投入副業的時間大約是？</div>
+      <div class="survey-opts">
+        <button class="survey-opt" onclick="surveyPick(3,'A',this)">1 小時以內</button>
+        <button class="survey-opt" onclick="surveyPick(3,'B',this)">1-2 小時</button>
+        <button class="survey-opt" onclick="surveyPick(3,'C',this)">3 小時以上</button>
+        <button class="survey-opt" onclick="surveyPick(3,'D',this)">可以全力投入</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="divider"></div>
+
+  <!-- Email 收集 -->
+  <div class="email-section" id="emailBox">
+    <div class="email-title">把你的發展路線地圖<br>寄到你的信箱</div>
+    <div class="email-sub">我會額外寄給你 3 封信，說明這個基因類型最常踩的坑，以及你現在最應該做的具體行動。</div>
+    <div class="email-row">
+      <input class="email-inp" id="emailInp" type="email" placeholder="你的 Email 地址">
+      <button class="btn-subscribe" onclick="submitEmail()">發送給我</button>
+    </div>
+    <div class="email-done" id="emailDone">✓ 已收到！第一封信正在路上</div>
+    <button class="btn-skip-email" onclick="skipEmail()">略過，下載結果圖片</button>
+  </div>
+
+  <!-- 社群 -->
+  <div class="social-row">
+    <button class="btn-social" onclick="openIG()">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="2" width="20" height="20" rx="5" ry="5"/><circle cx="12" cy="12" r="3"/><circle cx="17.5" cy="6.5" r="1" fill="currentColor" stroke="none"/></svg>
+      Follow @mori1024_
+    </button>
+    <button class="btn-social" onclick="shareResult()" id="shareBtn">
+      <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="18" cy="5" r="3"/><circle cx="6" cy="12" r="3"/><circle cx="18" cy="19" r="3"/><line x1="8.59" y1="13.51" x2="15.42" y2="17.49"/><line x1="15.41" y1="6.51" x2="8.59" y2="10.49"/></svg>
+      分享結果
+    </button>
+  </div>
+  <div style="height:40px"></div>
+</div>
+
+<!-- 分享卡片（隱藏） -->
+<div id="share-card">
+  <div id="sc-glow"></div>
+  <div id="sc-accent"></div>
+  <div id="sc-emoji"></div>
+  <div id="sc-type-en"></div>
+  <div id="sc-type-zh"></div>
+  <div id="sc-motto"></div>
+  <div id="sc-url"></div>
+</div>
+
+<script>
+/* ── 1. 設定 ── */
+const CFG = {
+  lineUrl: 'https://line.me/R/ti/p/@507wvwbz',
+  igUrl:   'https://instagram.com/mori1024_',
+  trackerUrl: 'https://quiz-tracker.mori1024.workers.dev/track',
+  mlKey:   '',     // TODO: 填入 MailerLite API key
+  mlGroup: {
+    K: '',  C: '',  S: '',  T: '',  M: '',
+  },
+};
+
+/* ── 2. 狀態變數 ── */
+let currentQ = 0, picked = null, answers = [], finalType = '';
+let surveyAnswers = { 1:'', 2:'', 3:'' };
+
+/* ── 3. 五種類型資料 ── */
+const TYPES = {
+  K:{
+    name:'知識變現型', nameEn:'Knowledge Monetizer', emoji:'🎓',
+    color:'#7A9EC4',  colorB:'#5B8DB8',
+    motto:'你的專業，是你最有競爭力的資產',
+    portrait:'你有能力把複雜的知識解釋得讓別人懂，而「讓人懂」這件事，本身就是市場願意付錢的能力。你不需要成為某個領域的最頂尖，只需要比你的目標受眾懂得更深——然後把這個深度轉換成可交付的形式。',
+    route:[
+      {emoji:'🌱',stage:'Stage 1',title:'定義你的知識邊界',desc:'找出你比 80% 的人懂得更多的那個主題，不需要完美，需要的是「夠具體」'},
+      {emoji:'📦',stage:'Stage 2',title:'包裝成可售的形式',desc:'電子書、1 小時諮詢、短課程——選一個最低阻力的形式先跑出去'},
+      {emoji:'🎓',stage:'Stage 3',title:'建立第一個付費客戶',desc:'不需要完整課程，先幫一個真實的人解決問題，收一個合理的費用'},
+      {emoji:'🔄',stage:'Stage 4',title:'規模化為被動收入',desc:'把成功的服務錄製成課程，讓一份努力可以服務多個人'},
+    ],
+    action:'今天就做：選定一個你比多數人更懂的主題，打開備忘錄，寫下它的大綱或目錄。哪怕只有 5 個章節標題，這就是你第一個知識產品的雛形。',
+    mori:'知識變現最大的障礙不是「知識不夠深」，是「不相信自己的知識有人願意付費」。我觀察到一件事：知識變現型的人通常低估自己的深度，因為他們太清楚自己還不知道什麼了。但你比 80% 的人懂這件事的部分，就已經夠你做一個起點。那個起點，才是值得擔心的事，而不是「夠不夠格」。',
+  },
+  C:{
+    name:'內容引流型', nameEn:'Content Creator', emoji:'✍️',
+    color:'#C4778A',  colorB:'#A4506A',
+    motto:'你的表達力，就是你的流量機器',
+    portrait:'你天生擅長讓人想繼續看下去。這個能力在現在的環境裡比你想像的更稀缺——大多數人有東西說，但沒辦法讓人留下來聽。你有這個能力，問題只是還沒有找到一個穩定的形式和主題。',
+    route:[
+      {emoji:'🎯',stage:'Stage 1',title:'找到你的核心主題',desc:'選一個你可以持續說三個月以上、每週都有新東西說的主題'},
+      {emoji:'📱',stage:'Stage 2',title:'穩定輸出建立信任',desc:'頻率比品質更重要——先讓人記得你在，再讓人記得你說什麼'},
+      {emoji:'📈',stage:'Stage 3',title:'受眾轉換為客戶',desc:'看你內容的人中有一部分有需求，你需要一個清楚的「下一步」讓他們走'},
+      {emoji:'💰',stage:'Stage 4',title:'多元變現與授權',desc:'廣告、聯盟、課程、合作——受眾規模決定你有多少選項'},
+    ],
+    action:'今天就做：選定你的核心主題，今天發出第一篇。不需要完美，需要的是「出去了」。第一篇的存在比第一篇的品質更重要。',
+    mori:'內容引流型最常卡在「還沒有準備好」。但我觀察到一件事：幾乎所有成功的內容創作者，回頭看他們最早的作品都覺得很糟。這不是說品質不重要——是說你現在的問題不是品質，是「開始了沒有」。開始了，品質才有地方提升。',
+  },
+  S:{
+    name:'服務套件型', nameEn:'Service Packager', emoji:'🔧',
+    color:'#7AC47A',  colorB:'#5AA45A',
+    motto:'你的執行力，是客戶願意付錢的理由',
+    portrait:'你不需要大受眾，不需要課程平台，不需要複雜的系統。你只需要幾個對的客戶，和一個清楚的交付流程。服務型副業的天花板低，但起步最快——你今天就可以接到第一個案子。',
+    route:[
+      {emoji:'📋',stage:'Stage 1',title:'定義一個具體服務',desc:'「幫 IG 帳號寫一個月的貼文文案，收費 6,000 元」——越具體越容易賣'},
+      {emoji:'🤝',stage:'Stage 2',title:'取得第一個付費客戶',desc:'從你現有的人脈開始，不要等陌生人找上門'},
+      {emoji:'⭐',stage:'Stage 3',title:'建立口碑與複購',desc:'做好一個客戶，他的推薦會帶來下一個——這是服務型最有效的增長'},
+      {emoji:'📦',stage:'Stage 4',title:'套件化並提高單價',desc:'把成功服務標準化成套餐，減少議價時間，提升利潤率'},
+    ],
+    action:'今天就做：寫下你能為別人解決的一個具體問題，定好收費（不要「看量決定」），今天傳訊給一個你認識的人說「我在提供這個服務，你或你認識的人有需要嗎？」',
+    mori:'服務套件型的人最常問我：「我要先有作品集才能接案嗎？」我的答案是：第一個客戶就是你的第一個作品。你不需要作品集才能接第一案，你需要第一案才能有作品集。去接那個「你沒有百分百把握但你知道你做得到」的案子。',
+  },
+  T:{
+    name:'工具整合型', nameEn:'Tool Integrator', emoji:'⚙️',
+    color:'#C4A96A',  colorB:'#A48952',
+    motto:'你的系統思維，讓你用時間以外的東西換錢',
+    portrait:'你比多數人早一步看到新工具的價值，然後你知道怎麼把它們組合起來解決問題。這個「看得到 + 會整合」的能力，在 AI 工具爆炸的現在，需求是前所未有的高。',
+    route:[
+      {emoji:'🔬',stage:'Stage 1',title:'熟練 3 個核心工具',desc:'選你已經在用的工具，深入到可以教別人，而不是淺嘗多個'},
+      {emoji:'⚙️',stage:'Stage 2',title:'建立一套可複製的流程',desc:'把「用這些工具解決 X 問題」整理成可以交付的流程文件'},
+      {emoji:'📚',stage:'Stage 3',title:'教別人用這套工具',desc:'工作坊、線上課程、諮詢——教的方式比你想像的多'},
+      {emoji:'🚀',stage:'Stage 4',title:'套件授權或代理服務',desc:'你的流程可以賣給企業，你的工具整合可以成為代理服務'},
+    ],
+    action:'今天就做：選三個你已經在用的 AI 工具，花 30 分鐘整理「用它解決 X 問題的完整流程」。寫成一篇 Notion 筆記，這就是你第一個可以賣的東西的原型。',
+    mori:'工具整合型的人通常是「第一個用上某個工具的人」，但最後變現的不一定是他們，因為他們花太多時間研究下一個新工具，而不是把現有的工具變成別人願意付費的東西。你現在最值錢的不是你知道最多工具，是你能用工具幫別人省時間或省錢。',
+  },
+  M:{
+    name:'媒介橋梁型', nameEn:'Network Connector', emoji:'🌐',
+    color:'#9A7EC4',  colorB:'#7A5EA4',
+    motto:'你認識的每一個人，都是一個潛在的機會',
+    portrait:'你讓別人感覺被看見、被理解，這個能力比你想像的更值錢。在一個到處都是資訊的世界裡，「有人記得你、願意把你引薦給別人」是稀缺的社交資本。你已經在做這件事了，只差一個把它變現的結構。',
+    route:[
+      {emoji:'🌱',stage:'Stage 1',title:'深化一個核心社群',desc:'先成為某個圈子裡「大家都認識他」的那個人，而不是到處散播'},
+      {emoji:'🤝',stage:'Stage 2',title:'建立互補的合作網絡',desc:'主動把有互補資源的人連結起來，讓你成為生態系的核心節點'},
+      {emoji:'💼',stage:'Stage 3',title:'媒合推薦開始變現',desc:'聯盟行銷、媒合服務、社群付費——你的人脈是可以變現的'},
+      {emoji:'🌐',stage:'Stage 4',title:'規模化社群生意',desc:'付費社群、會員制、品牌合作——讓你的連結能力成為可擴展的生意'},
+    ],
+    action:'今天就做：找出你身邊 2 個有互補資源的人，今天傳訊把他們介紹認識。這個小動作的長期價值，遠超過你現在想像的。',
+    mori:'媒介橋梁型最常說的一句話是「我只是介紹大家認識而已，這有什麼好賺錢的？」但如果你在任何一個生態裡，是那個「想到某件事就會想到你」的人，那你已經是這個生態裡最難被取代的角色了。問題不是你有沒有價值，是你有沒有建立一個讓這個價值被看見並被支付的結構。',
+  },
+};
+const TYPE_ORDER = ['K','C','S','T','M'];
+
+/* ── 4. 10 道題目 ── */
+const QS = [
+  {t:'工作中你最享受的環節是什麼？',opts:[
+    {g:'K',txt:'深入研究一個主題，把它徹底搞清楚'},
+    {g:'C',txt:'把一個複雜的想法用簡單的方式讓別人懂'},
+    {g:'S',txt:'實際動手，完成一件有具體成果的事'},
+    {g:'T',txt:'找出流程裡的低效環節，然後優化它'},
+    {g:'M',txt:'把不同背景的人連結在一起，看到火花產生'},
+  ]},
+  {t:'朋友最可能找你幫什麼忙？',opts:[
+    {g:'K',txt:'解釋一個他們搞不懂的專業知識或概念'},
+    {g:'C',txt:'幫他們寫文案、設計貼文或說清楚一件事'},
+    {g:'S',txt:'幫他們完成一件他們不擅長的具體任務'},
+    {g:'T',txt:'推薦工具或幫他們解決技術和流程問題'},
+    {g:'M',txt:'介紹他們認識某個人，或幫他們找到某個資源'},
+  ]},
+  {t:'在一個新社群或平台，你最自然的角色是？',opts:[
+    {g:'K',txt:'深度內容輸出者——分享有分量的見解'},
+    {g:'C',txt:'故事敘說者——用創作和表達吸引人留下'},
+    {g:'S',txt:'問題解決者——直接幫人處理具體的麻煩'},
+    {g:'T',txt:'工具整合達人——分享提效方法和工具組合'},
+    {g:'M',txt:'社群活絡者——把大家連在一起的那個人'},
+  ]},
+  {t:'你在什麼情境下最有「這個副業我能做」的感覺？',opts:[
+    {g:'K',txt:'看到有人在教一件我比他懂更多的事'},
+    {g:'C',txt:'看到自己的一個貼文或影片被大量轉發'},
+    {g:'S',txt:'完成一個客戶任務，收到真誠的謝謝'},
+    {g:'T',txt:'一個自動化流程跑通了，不需要我介入'},
+    {g:'M',txt:'有人因為我的介紹完成了一件重要的事'},
+  ]},
+  {t:'如果副業只能有一個核心能力，你希望是？',opts:[
+    {g:'K',txt:'把複雜的事解釋得清楚讓人真正理解的能力'},
+    {g:'C',txt:'用內容讓陌生人對一件事產生共鳴的能力'},
+    {g:'S',txt:'承諾了什麼就可靠地做到的執行能力'},
+    {g:'T',txt:'讓同樣的事用更少時間完成的系統化能力'},
+    {g:'M',txt:'讓初次見面的人感覺被理解、被連結的能力'},
+  ]},
+  {t:'你最能接受的副業工作模式是？',opts:[
+    {g:'K',txt:'每天固定一段時間深度工作，不被打擾'},
+    {g:'C',txt:'每天都有創作的時間和自由表達的空間'},
+    {g:'S',txt:'有具體的客戶、明確的需求、清楚的交付'},
+    {g:'T',txt:'系統設定好後它自己跑，我只做關鍵決策'},
+    {g:'M',txt:'每天都有人際互動和新的連結在發生'},
+  ]},
+  {t:'你最不能接受副業裡出現什麼？',opts:[
+    {g:'K',txt:'必須做表面的內容，沒有深度'},
+    {g:'C',txt:'沒有創作空間，只能照指令複製執行'},
+    {g:'S',txt:'沒有真實的客戶和需求，只是理論'},
+    {g:'T',txt:'流程混亂、全靠手動、沒有任何系統'},
+    {g:'M',txt:'必須完全獨自悶頭做，完全沒有互動'},
+  ]},
+  {t:'你想到副業的理想日常，腦中浮現的畫面是？',opts:[
+    {g:'K',txt:'在一個安靜的空間深度工作，輸出有份量的成果'},
+    {g:'C',txt:'每天有一段創作時間，看到粉絲和互動在成長'},
+    {g:'S',txt:'每週服務幾個固定客戶，清楚知道每個人的進度'},
+    {g:'T',txt:'儀表板上的數字自動增長，系統在幫我工作'},
+    {g:'M',txt:'認識新朋友、媒合合作，每天有不同的連結在發生'},
+  ]},
+  {t:'別人最可能怎麼描述你？',opts:[
+    {g:'K',txt:'「跟他聊完，很多事情突然就想清楚了」'},
+    {g:'C',txt:'「他說的東西讓我忍不住一直看下去」'},
+    {g:'S',txt:'「他答應的事一定做到，非常可靠」'},
+    {g:'T',txt:'「他很會找到讓事情變簡單的方法」'},
+    {g:'M',txt:'「他認識的人超多，而且大家都願意幫他」'},
+  ]},
+  {t:'你覺得自己現在最需要的是什麼？',opts:[
+    {g:'K',txt:'一個把我的知識轉換成可售產品的具體方法'},
+    {g:'C',txt:'一個穩定產出內容並累積受眾的清楚策略'},
+    {g:'S',txt:'一個找到第一個付費客戶的具體行動方案'},
+    {g:'T',txt:'一套整合好的自動化工具和流程系統'},
+    {g:'M',txt:'一個可以深度合作的夥伴網絡或社群'},
+  ]},
+];
+
+/* ── 5. 畫面切換 ── */
+function show(id){
+  document.querySelectorAll('.screen').forEach(s=>s.classList.remove('active'));
+  document.getElementById(id).classList.add('active');
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+/* ── 6. 測驗流程 ── */
+function startQuiz(){ currentQ=0; answers=[]; show('screen-quiz'); renderQ(); }
+
+function renderQ(){
+  const q=QS[currentQ];
+  const pct=Math.round(currentQ/QS.length*100);
+  document.getElementById('progLabel').textContent=`第 ${currentQ+1} 題，共 ${QS.length} 題`;
+  document.getElementById('progPct').textContent=pct+'%';
+  document.getElementById('progFill').style.width=pct+'%';
+  document.getElementById('qNum').textContent='Q'+(currentQ+1);
+  document.getElementById('qText').textContent=q.t;
+  const list=document.getElementById('optsList');
+  list.innerHTML='';
+  picked=null;
+  document.getElementById('btnNext').classList.remove('ready');
+  const shuffled=[...q.opts].sort(()=>Math.random()-.5);
+  shuffled.forEach(o=>{
+    const btn=document.createElement('button');
+    btn.className='opt-btn';
+    btn.textContent=o.txt;
+    btn.onclick=()=>selectOpt(btn,o.g);
+    list.appendChild(btn);
+  });
+}
+
+function selectOpt(btn,gene){
+  document.querySelectorAll('.opt-btn').forEach(b=>b.classList.remove('selected'));
+  btn.classList.add('selected');
+  picked=gene;
+  document.getElementById('btnNext').classList.add('ready');
+}
+
+function nextQ(){
+  if(!picked) return;
+  answers.push(picked);
+  currentQ++;
+  if(currentQ<QS.length){ renderQ(); }
+  else{ showCalc(); }
+}
+
+/* ── 7. 計算與結果 ── */
+function showCalc(){
+  show('screen-calc');
+  const steps=['cs1','cs2','cs3','cs4'];
+  steps.forEach((id,i)=>setTimeout(()=>document.getElementById(id).classList.add('show'),400+i*600));
+  setTimeout(()=>{ calcResult(); show('screen-result'); setTimeout(animateResult,300); },3200);
+}
+
+function calcResult(){
+  const scores={K:0,C:0,S:0,T:0,M:0};
+  answers.forEach(g=>{ if(scores[g]!==undefined) scores[g]+=2; });
+  finalType=TYPE_ORDER.reduce((a,b)=>scores[a]>=scores[b]?a:b);
+}
+
+/* ── 8. 渲染結果（T6 路線地圖）── */
+function animateResult(){
+  const t=TYPES[finalType];
+  // 設定 CSS 顏色變數
+  document.getElementById('screen-result').style.setProperty('--type-color',t.color);
+  // 基本資訊
+  document.getElementById('resEmoji').textContent=t.emoji;
+  document.getElementById('resName').textContent=t.name;
+  document.getElementById('resEn').textContent=t.nameEn;
+  document.getElementById('resMotto').textContent=t.motto;
+  document.getElementById('resPortrait').textContent=t.portrait;
+  // 路線地圖
+  const map=document.getElementById('routeMap');
+  map.innerHTML='';
+  t.route.forEach((step,i)=>{
+    const isLast=i===t.route.length-1;
+    const div=document.createElement('div');
+    div.className='route-step';
+    div.innerHTML=`
+      <div class="step-left">
+        <div class="step-circle" style="--type-color:${t.color}">${step.emoji}</div>
+        ${!isLast?`<div class="step-line" style="--type-color:${t.color}"></div>`:''}
+      </div>
+      <div class="step-content">
+        <div class="step-stage" style="color:${t.color}">${step.stage}</div>
+        <div class="step-title">${step.title}</div>
+        <div class="step-desc">${step.desc}</div>
+      </div>`;
+    map.appendChild(div);
+    setTimeout(()=>div.classList.add('visible'),500+i*350);
+  });
+  // 首步行動
+  document.getElementById('actionText').textContent=t.action;
+  setTimeout(()=>document.getElementById('actionCard').classList.add('visible'),500+t.route.length*350+200);
+  // Mori 觀點
+  document.getElementById('moriText').textContent=t.mori;
+  setTimeout(()=>document.getElementById('moriCard').classList.add('visible'),500+t.route.length*350+500);
+  // 調查
+  setTimeout(()=>document.getElementById('surveyWrap').classList.add('visible'),500+t.route.length*350+800);
+}
+
+/* ── 9. 調查 ── */
+function surveyPick(q,val,btn){
+  surveyAnswers[q]=val;
+  btn.closest('.survey-group').querySelectorAll('.survey-opt').forEach(b=>b.classList.remove('picked'));
+  btn.classList.add('picked');
+}
+
+/* ── 10. Email 收集 ── */
+async function submitEmail(){
+  const email=document.getElementById('emailInp').value.trim();
+  if(!email||!email.includes('@')) return;
+  document.getElementById('emailDone').style.display='block';
+  document.getElementById('emailInp').disabled=true;
+  document.querySelector('.btn-subscribe').disabled=true;
+  const seg=calcSeg();
+  trackResponse({quiz:'side-gene',result:TYPES[finalType].name,
+    q1:surveyAnswers[1],q2:surveyAnswers[2],q3:surveyAnswers[3],segment:seg,email});
+  if(CFG.mlKey&&CFG.mlGroup[finalType]){
+    try{
+      await fetch('https://connect.mailerlite.com/api/subscribers',{
+        method:'POST',
+        headers:{'Content-Type':'application/json','Authorization':'Bearer '+CFG.mlKey},
+        body:JSON.stringify({email,groups:[CFG.mlGroup[finalType]]})
+      });
+    }catch(e){}
+  }
+}
+function skipEmail(){ document.getElementById('emailBox').style.display='none'; }
+function calcSeg(){
+  const {1:q1,2:q2,3:q3}=surveyAnswers;
+  return (q1==='C'||q1==='D')&&q2==='D'&&(q3==='C'||q3==='D')?'partner':
+         q2==='A'&&(q3==='A'||q3==='B')?'client':
+         q1==='A'||q3==='D'?'warm':'cold';
+}
+function trackResponse(data){
+  /* 本機預覽無效，需真實環境（Cloudflare Worker） */
+  try{fetch(CFG.trackerUrl,{method:'POST',headers:{'Content-Type':'application/json'},body:JSON.stringify(data),keepalive:true}).catch(()=>{})}catch(e){}
+}
+
+/* ── 11. 社群 / 分享 ── */
+function openIG(){ window.open(CFG.igUrl,'_blank'); }
+
+function loadScript(src){
+  return new Promise((res,rej)=>{const s=document.createElement('script');s.src=src;s.onload=res;s.onerror=rej;document.head.appendChild(s);});
+}
+async function generateShareCanvas(){
+  const t=TYPES[finalType];
+  document.getElementById('sc-emoji').textContent=t.emoji;
+  document.getElementById('sc-type-en').textContent=t.nameEn;
+  document.getElementById('sc-type-zh').textContent=t.name;
+  document.getElementById('sc-motto').textContent=t.motto;
+  document.getElementById('sc-url').textContent=window.location.href.replace(/^https?:\/\//,'');
+  document.getElementById('sc-glow').style.background=`radial-gradient(circle at 50% 35%,${t.color}28,transparent 60%)`;
+  document.getElementById('sc-accent').style.background=`linear-gradient(90deg,transparent,${t.color},transparent)`;
+  if(!window.html2canvas){ await loadScript('https://cdnjs.cloudflare.com/ajax/libs/html2canvas/1.4.1/html2canvas.min.js'); }
+  const card=document.getElementById('share-card');
+  return await html2canvas(card,{scale:2,useCORS:true,backgroundColor:'#0A0A0F',logging:false,width:600,height:600});
+}
+async function shareResult(){
+  const btn=document.getElementById('shareBtn'), orig=btn.innerHTML;
+  btn.innerHTML='生成中…'; btn.disabled=true;
+  try{
+    const canvas=await generateShareCanvas();
+    const dataUrl=canvas.toDataURL('image/png');
+    if(navigator.share&&navigator.canShare){
+      const blob=await(await fetch(dataUrl)).blob();
+      const file=new File([blob],'副業基因_'+TYPES[finalType].name+'.png',{type:'image/png'});
+      if(navigator.canShare({files:[file]})){
+        await navigator.share({files:[file],title:'副業基因測驗',text:'我的副業基因是「'+TYPES[finalType].name+'」\n'+TYPES[finalType].motto+'\n\n'+window.location.href});
+        return;
+      }
+    }
+    const link=document.createElement('a');
+    link.download='副業基因_'+TYPES[finalType].name+'.png';
+    link.href=dataUrl;
+    document.body.appendChild(link); link.click(); document.body.removeChild(link);
+  }catch(e){ if(e.name!=='AbortError') alert('圖片生成失敗，請截圖儲存。'); }
+  finally{ btn.innerHTML=orig; btn.disabled=false; }
+}
+
+/* ── 12. 自訂游標 ── */
+const cur=document.getElementById('cursor'), ring=document.getElementById('cursor-ring');
+document.addEventListener('mousemove',e=>{
+  cur.style.left=e.clientX+'px'; cur.style.top=e.clientY+'px';
+  ring.style.left=e.clientX+'px'; ring.style.top=e.clientY+'px';
+});
+
+/* ── 13. 粒子背景 ── */
+(function(){
+  const canvas=document.getElementById('particles-js');
+  const ctx=canvas.getContext('2d');
+  let W,H,pts=[];
+  function resize(){ W=canvas.width=innerWidth; H=canvas.height=innerHeight; }
+  function init(){
+    pts=[];
+    const n=Math.min(50,Math.floor(W*H/25000));
+    for(let i=0;i<n;i++) pts.push({x:Math.random()*W,y:Math.random()*H,vx:(Math.random()-.5)*.3,vy:(Math.random()-.5)*.3,r:Math.random()*1.2+.4,a:Math.random()*.5+.1});
+  }
+  function draw(){
+    ctx.clearRect(0,0,W,H);
+    pts.forEach(p=>{
+      p.x+=p.vx; p.y+=p.vy;
+      if(p.x<0)p.x=W; if(p.x>W)p.x=0;
+      if(p.y<0)p.y=H; if(p.y>H)p.y=0;
+      ctx.beginPath(); ctx.arc(p.x,p.y,p.r,0,Math.PI*2);
+      ctx.fillStyle=`rgba(196,169,106,${p.a})`; ctx.fill();
+    });
+    pts.forEach((a,i)=>pts.slice(i+1).forEach(b=>{
+      const d=Math.hypot(a.x-b.x,a.y-b.y);
+      if(d<120){ ctx.beginPath(); ctx.moveTo(a.x,a.y); ctx.lineTo(b.x,b.y);
+        ctx.strokeStyle=`rgba(196,169,106,${.12*(1-d/120)})`; ctx.lineWidth=.5; ctx.stroke(); }
+    }));
+    requestAnimationFrame(draw);
+  }
+  window.addEventListener('resize',()=>{ resize(); init(); });
+  resize(); init(); draw();
+})();
+</script>
+</body>
+</html>
