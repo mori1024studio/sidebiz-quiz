@@ -58,6 +58,12 @@ body{cursor:none}
 .btn-next.ready{opacity:1;pointer-events:auto}
 .btn-next.ready:hover{transform:translateY(-1px)}
 
+/* ── CSS：返回按鈕 ── */
+.quiz-nav{display:flex;align-items:center;justify-content:space-between;margin-top:16px;width:100%;max-width:320px}
+.quiz-nav .btn-next{margin-top:0;width:auto}
+.btn-prev-q{background:transparent;border:1px solid var(--border);border-radius:100px;padding:10px 22px;font-size:13px;color:var(--muted);cursor:none;font-family:inherit;transition:border-color .3s,color .3s}
+.btn-prev-q:hover{border-color:rgba(196,169,106,.35);color:var(--text)}
+
 /* ── CSS：計算畫面 ── */
 .calc-wrap{display:flex;flex-direction:column;align-items:center;justify-content:center;min-height:80vh;gap:32px;text-align:center}
 .calc-title{font-size:18px;font-weight:700;color:var(--gold)}
@@ -179,7 +185,10 @@ body{cursor:none}
     <div class="q-text" id="qText"></div>
   </div>
   <div class="opts-list" id="optsList"></div>
-  <button class="btn-next" id="btnNext" onclick="nextQ()">下一題 →</button>
+  <div class="quiz-nav">
+    <button class="btn-prev-q" id="btnPrev" onclick="prevQ()">← 返回首頁</button>
+    <button class="btn-next" id="btnNext" onclick="nextQ()">下一題 →</button>
+  </div>
 </div>
 
 <!-- ── 畫面：計算中 ── -->
@@ -482,10 +491,19 @@ function renderQ(){
   shuffled.forEach(o=>{
     const btn=document.createElement('button');
     btn.className='opt-btn';
+    btn.dataset.gene=o.g;
     btn.textContent=o.txt;
     btn.onclick=()=>selectOpt(btn,o.g);
     list.appendChild(btn);
   });
+  const prevGene=answers[currentQ];
+  if(prevGene!==undefined){
+    document.querySelectorAll('.opt-btn').forEach(b=>{ if(b.dataset.gene===prevGene) b.classList.add('selected'); });
+    picked=prevGene;
+    document.getElementById('btnNext').classList.add('ready');
+  }
+  const pb=document.getElementById('btnPrev');
+  if(pb) pb.textContent=currentQ===0?'← 返回首頁':'← 上一題';
 }
 
 function selectOpt(btn,gene){
@@ -497,10 +515,16 @@ function selectOpt(btn,gene){
 
 function nextQ(){
   if(!picked) return;
-  answers.push(picked);
+  answers[currentQ]=picked;
   currentQ++;
   if(currentQ<QS.length){ renderQ(); }
   else{ showCalc(); }
+}
+
+function prevQ(){
+  if(currentQ===0){ show('screen-start'); return; }
+  currentQ--;
+  renderQ();
 }
 
 /* ── 7. 計算與結果 ── */
